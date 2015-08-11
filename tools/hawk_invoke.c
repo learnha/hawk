@@ -145,6 +145,9 @@ int main(int argc, char **argv)
 	    (strcmp(argv[2], "hb_report") == 0 ||
 	     (argc >= 4 &&
 	      strcmp(argv[2], "crm") == 0 &&
+	      strcmp(argv[3], "report") == 0) ||
+	     (argc >= 4 &&
+	      strcmp(argv[2], "crm") == 0 &&
 	      strcmp(argv[3], "history") == 0))) {
 
 		/*
