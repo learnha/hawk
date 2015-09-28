@@ -40,8 +40,6 @@ class MonitorController < ApplicationController
     ENV['HTTP_ORIGIN'] = request.env['HTTP_ORIGIN']
 
     response.headers['Content-Type'] = 'text/event-stream'
-    response.headers['Access-Control-Allow-Origin'] = request.env['HTTP_ORIGIN']
-    response.headers['Access-Control-Allow-Credentials'] = "true" # may not be necessary
     Open3.popen3("/usr/sbin/hawk_monitor") do |i, o|
       result = o.read
       _, body = result.split("\n\n", 2)

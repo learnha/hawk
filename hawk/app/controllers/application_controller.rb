@@ -36,6 +36,8 @@ class ApplicationController < ActionController::Base
   include FastGettext::Translation
 
   before_filter :set_users_locale
+  before_filter :cors_preflight_check
+  after_filter :cors_set_access_control_headers
 
   def set_users_locale
     # the locale cookie is set via JS in the preferences dialog
@@ -72,6 +74,28 @@ class ApplicationController < ActionController::Base
   # Meant to be protected, but must be public to be called by Invoker
   def current_user
     @_current_user ||= session[:username]
+  end
+
+  def cors_set_access_control_headers
+    if request.headers['Origin']
+      response.headers['Access-Control-Allow-Origin'] = request.headers["Origin"]
+      response.headers['Access-Control-Allow-Credentials'] = 'true'
+      response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE, OPTIONS'
+      response.headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, Accept, Authorization, X-CSRF-Token, Token'
+      response.headers['Access-Control-Max-Age'] = "1728000"
+    end
+  end
+
+  def cors_preflight_check
+    if request.method == 'OPTIONS' && request.headers['Origin']
+      response.headers["Access-Control-Allow-Origin"] = request.headers["Origin"]
+      response.headers['Access-Control-Allow-Credentials'] = 'true'
+      response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE, OPTIONS'
+      response.headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-Prototype-Version, X-CSRF-Token, Token'
+      response.headers['Access-Control-Max-Age'] = '1728000'
+
+      render json: {}, status: 200
+    end
   end
 
   #
@@ -156,14 +180,6 @@ protected
   #    - as above, but after logout, reload the status page
   #    - you should be redirected back to the login page
   def access_denied
-
-    # As in the Cib controller, we need to allow cross-domain requests
-    # here in order for the client to actually see the permission denied
-    # error
-    if request.headers["Origin"]
-      response.headers["Access-Control-Allow-Origin"] = request.headers["Origin"]
-      response.headers["Access-Control-Allow-Credentials"] = "true"
-    end
 
     respond_to do |format|
       format.any do

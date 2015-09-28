@@ -48,12 +48,6 @@ class SessionsController < ApplicationController
         redirect_back_or_default root_url if authorized?
       end
       format.json do
-        # Explicity allow CORS
-        # TODO(should): Consolidate with CibController and ApplicationController
-        if request.headers["Origin"]
-          response.headers["Access-Control-Allow-Origin"] = request.headers["Origin"]
-          response.headers["Access-Control-Allow-Credentials"] = "true"
-        end
         # This is fake, to allow the dashboard to figure out whether it
         # can talk to this node at all (very quick response)
         render :status => 200, :json => nil
@@ -103,12 +97,6 @@ class SessionsController < ApplicationController
         end
       end
       format.json do
-        # Explicity allow CORS
-        # TODO(should): Consolidate with CibController and ApplicationController
-        if request.headers["Origin"]
-          response.headers["Access-Control-Allow-Origin"] = request.headers["Origin"]
-          response.headers["Access-Control-Allow-Credentials"] = "true"
-        end
         if ok
           render :status => 200, :json => nil
         else
@@ -133,5 +121,4 @@ class SessionsController < ApplicationController
     end
     redirect_to :action => 'new'
   end
-
 end
