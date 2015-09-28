@@ -81,6 +81,8 @@ class MainController < ApplicationController
   def monitor
     require "open3"
 
+    ENV['QUERY_STRING'] = request.query_string.to_s
+    ENV['HTTP_ORIGIN'] = request.env['HTTP_ORIGIN']
     result = Open3.popen3("/usr/sbin/hawk_monitor") do |i, o|
       o.read
     end
