@@ -35,6 +35,10 @@ require 'open3'
 class MonitorController < ApplicationController
   include ActionController::Live
 
+  skip_before_filter :set_users_locale
+  skip_around_filter :inject_current_user_into_invoker
+  before_filter :login_required
+
   def monitor
     ENV['QUERY_STRING'] = request.query_string.to_s
     ENV['HTTP_ORIGIN'] = request.env['HTTP_ORIGIN']
