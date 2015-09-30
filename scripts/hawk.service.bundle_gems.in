@@ -4,8 +4,9 @@ After=network.target
 
 [Service]
 Type=simple
-KillMode=none
-TimeoutSec=300
+KillMode=control-group
+TimeoutStartSec=300
+TimeoutStopSec=10
 
 User=hacluster
 Group=haclient
