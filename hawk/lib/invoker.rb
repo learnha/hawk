@@ -34,8 +34,7 @@ end
 
 #
 # Singleton class for invoking crm configuration tools as the current
-# user, obtained by trickery from ApplicationController, which injects
-# a "current_user" method into this class.
+# user.
 #
 class Invoker
   include FastGettext::Translation
@@ -170,6 +169,10 @@ class Invoker
       end
       [exitstatus, stderr]
     end
+  end
+
+  def current_user
+    Thread.current[:current_user].call
   end
 end
 

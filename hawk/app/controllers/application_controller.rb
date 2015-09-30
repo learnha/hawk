@@ -118,11 +118,8 @@ protected
   def inject_current_user_into_invoker
     # Can't use self inside the proc, or the binding is wrong
     current_controller = self
-    # TODO(should): Ruby 1.9 apparently doesn't allow send to call private
-    #               methods - need to replace with funcall.
-    Invoker.send(:define_method, 'current_user', proc { current_controller.current_user })
+    Thread.current[:current_user] = proc { current_controller.send(:current_user) }
     yield
-    Invoker.send(:remove_method, 'current_user')
   end
 
   before_filter :init_shadow_cib
