@@ -117,15 +117,8 @@ function json_from_request(request)
 // include a CSRF token with every AJAX request.  For details see:
 // http://jasoncodes.com/posts/rails-csrf-vulnerability
 function CSRFProtection(xhr, options) {
-  if (options.cross_domain_hack) {
-    // Cross-domain requests for the cluster dashboard must have *no*
-    // extra headers, or they trigger CORS preflight on Firefox.  Also
-    // we need to ensure session cookies are passed.
-    xhr.withCredentials = true;
-  } else {
-    var token = $('meta[name="csrf-token"]').attr("content");
-    if (token) xhr.setRequestHeader("X-CSRF-Token", token);
-  }
+  var token = $('meta[name="csrf-token"]').attr("content");
+  if (token) xhr.setRequestHeader("X-CSRF-Token", token);
 }
 if ("ajaxPrefilter" in $) {
   $.ajaxPrefilter(function(options, originalOptions, xhr) { CSRFProtection(xhr, options); });

@@ -150,7 +150,8 @@ option 1 for the moment.
             "&password=" + escape(e.find("input[name=password]").val()),
           dataType: "json", // necessary?
           type: "POST",
-          cross_domain_hack: true,
+          crossDomain: true,
+          xhrFields: { withCredentials: true },
           success: function(data) {
             self.element.find(".cluster-login").hide();
             self.element.find(".spinner").show();
@@ -190,7 +191,8 @@ option 1 for the moment.
         dataType: "json",   // necessary?
         type: "GET",
         cache: false,
-        cross_domain_hack: true,    // needed to get proper headers
+        crossDomain: true,
+        xhrFields: { withCredentials: true },
         success: function(data) {
           if (self.deleted) return;
           // Note: success fires on broken request (e.g.: SSL cert or CORS problem)
@@ -219,7 +221,8 @@ option 1 for the moment.
         data: "format=json&mini=true",
         dataType: "json",   // necessary?
         type: "GET",
-        cross_domain_hack: true,    // needed to get proper headers
+        crossDomain: true,
+        xhrFields: { withCredentials: true },
         success: function(data) {
           if (self.deleted) return;
           // Note: success fires on broken request (e.g.: SSL cert or CORS problem)
@@ -486,7 +489,8 @@ function add_cluster() {
           data: "format=json",
           dataType: "json",   // necessary?
           type: "GET",
-          cross_domain_hack: true,    // needed to get proper headers
+          crossDomain: true,
+          xhrFields: { withCredentials: true },
           success: function(data, status, xhr) {
             if (xhr && xhr.status == 200) {
               new_cluster(cn, { node_list: [ hn ], mon_node: hn });
