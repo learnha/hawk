@@ -163,7 +163,11 @@ class MainController < ApplicationController
   end
 
   def ticket_grant
-    if params[:ticket] && params[:site]
+    if ENV['CIB_shadow']
+      render :status => 400, :json => {
+        :error => _('Use the simulator controls while simulator is active')
+      }
+    elsif params[:ticket] && params[:site]
       invoke "booth", "client", "grant", "-t", params[:ticket], "-s", params[:site]
     else
       render :status => 400, :json => {
@@ -173,7 +177,11 @@ class MainController < ApplicationController
   end
 
   def ticket_revoke
-    if params[:ticket]
+    if ENV['CIB_shadow']
+      render :status => 400, :json => {
+        :error => _('Use the simulator controls while simulator is active')
+      }
+    elsif params[:ticket]
       invoke "booth", "client", "revoke", "-t", params[:ticket]
     else
       render :status => 400, :json => {
