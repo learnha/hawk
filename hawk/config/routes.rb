@@ -32,8 +32,13 @@
 Rails.application.routes.draw do
   root :to => 'main#index'
 
-  resource :session
+  resource :session, via: [:post, :options]
   resources :cib do
+    member do
+      get action: "show"
+      match action: "show", via: [:post, :options]
+    end
+
     resources :crm_config
     resources :resources
     resources :primitives
@@ -83,8 +88,8 @@ Rails.application.routes.draw do
   match 'main/graph_gen' => 'main#graph_gen', as: :graph_gen, via: [:get, :post]
   match 'main/graph_get' => 'main#graph_get', as: :graph_get, via: [:get, :post]
   match '/' => 'main#index', via: [:get, :post]
-  match '/login' => 'sessions#new', as: :login, via: [:get, :post]
+  match '/login' => 'sessions#new', as: :login, via: [:get, :post, :options]
   match '/logout' => 'sessions#destroy', as: :logout, via: [:get, :post]
   match 'dashboard' => 'dashboard#index', as: :dashboard, via: [:get, :post]
-  get 'monitor' => 'monitor#monitor', :as => :monitor
+  get 'monitor' => 'monitor#monitor', :as => :monitor, via: [:get, :options]
 end
