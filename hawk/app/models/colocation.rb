@@ -194,7 +194,7 @@ class Colocation < Constraint
       # don't flip around the other way like we do below)
       collapsed[0][:resources].each do |r|
         cmd += " #{r[:id]}"
-        cmd += ":#{set[:role]}" if collapsed[0][:role]
+        cmd += ":#{collapsed[0][:role]}" if collapsed[0][:role]
       end
     else
       collapsed.each do |set|
