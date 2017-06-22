@@ -106,16 +106,16 @@ class Role < CibObject
   private
 
   def shell_syntax
-    cmd = "role #{@id}"
-    @rules.each do |rule|
-      cmd += " #{rule[:right]} "
-      cmd += " tag:#{rule[:tag]}" if rule[:tag] && !rule[:tag].empty?
-      cmd += " ref:#{rule[:ref]}" if rule[:ref] && !rule[:ref].empty?
-      cmd += " xpath:#{rule[:xpath]}" if rule[:xpath] && !rule[:xpath].empty?
-      cmd += " attribute:#{rule[:attribute]}" if rule[:attribute] && !rule[:attribute].empty?
-    end
-    Rails.logger.debug(cmd)
-    cmd
+    [].tap do |cmd|
+      cmd.push "role #{@id}"
+      @rules.each do |rule|
+        cmd.push rule[:right]
+        cmd.push crm_quote("tag:#{rule[:tag]}") unless rule[:tag].blank?
+        cmd.push crm_quote("ref:#{rule[:ref]}") unless rule[:ref].blank?
+        cmd.push crm_quote("xpath:#{rule[:xpath]}") unless rule[:xpath].blank?
+        cmd.push crm_quote("attribute:#{rule[:attribute]}") unless rule[:attribute].blank?
+      end
+    end.join(' ')
   end
 
 end

@@ -69,6 +69,19 @@ class CibObject
     create_or_update
   end
 
+  # TODO(should): Don't add quotes if unnecessary (e.g. no whitespace in val)
+  def crm_quote(str)
+    if str.index("'")
+      "\"#{str}\""
+    else
+      "'#{str}'"
+    end
+  end
+
+  def unquotable?(str)
+    str.index("'") && str.index('"')
+  end
+
   class << self
 
     # Check whether anything with the given ID exists, or for a specific

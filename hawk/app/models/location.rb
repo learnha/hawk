@@ -192,21 +192,6 @@ class Location < Constraint
 
   private
 
-  # TODO(must): Move this somewhere else and reuse in other models
-  # TODO(should): Don't add quotes if unnecessary (e.g. no whitespace in val)
-  def crm_quote(str)
-    if str.index("'")
-      "\"#{str}\""
-    else
-      "'#{str}'"
-    end
-  end
-
-  # TODO(must): As above, move this elsewhere for reuse
-  def unquotable?(str)
-    str.index("'") && str.index('"')
-  end
-
   # Note: caller must ensure valid rule before calling this
   def shell_syntax
     cmd = "location #{@id} "
