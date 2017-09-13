@@ -2,7 +2,7 @@
 # See COPYING for license.
 
 Rails.application.routes.draw do
-  scope module: 'api', as: 'api' do
+  scope module: 'api', as: 'api', defaults: {format: :json} do
     get '/login', to: "api#login"
     scope :status do
       get '/', to: "status#index", as: :status
