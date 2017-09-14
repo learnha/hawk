@@ -56,7 +56,7 @@ module Api
     private
 
     def get_status
-      @status = Status.new @current_user
+      @status = Status.new(cib_status)
     end
   end
 end

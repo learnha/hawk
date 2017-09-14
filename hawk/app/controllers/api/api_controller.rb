@@ -55,9 +55,9 @@ module Api
       $?.exitstatus == 0
     end
 
-    def current_cib
+    def cib_status
       if @current_user
-        @current_cib ||= begin Cib.new("live", @current_user, false, false) end
+        @cib_status ||= begin CibStatus.new(@current_user) end
       end
     end
   end
