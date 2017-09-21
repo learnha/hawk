@@ -236,12 +236,14 @@ $(function() {
         align: 'right',
         halign: 'right',
         events: {
-          'click .delete': function (e, value, row, index) {
+          'click .revoke': function (e, value, row, index) {
             e.preventDefault();
             if (row.id == null) {
               return false;
             }
-            $.hawkDeleteOperation(row.id, Routes.cib_ticket_path($('body').data('cib'), row.id, { format: 'json' }));
+            $.hawkRunOperation(
+              i18n.translate('This will request the ticket %s be revoked. Do you want to continue?').fetch(row.id),
+              [$(this).attr('href'), ".json"].join(""));
             return false;
           }
         },
@@ -252,7 +254,7 @@ $(function() {
 
           var operations = [];
 
-          if (row.state == "elsewhere") {
+          if (row.state == "elsewhere" || row.state == "granted") {
             operations.push([
               '<a href="',
               Routes.revoke_cib_tickets_path($('body').data('cib'), row.id),
