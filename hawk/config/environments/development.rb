@@ -29,6 +29,9 @@ Rails.application.configure do
 
   config.cache_store = :memory_store
 
+  # nicer error format when debugging the API
+  config.debug_exception_response_format = :api
+
   config.assets.debug = true
   config.assets.raise_runtime_errors = true
   config.assets.js_compressor = nil
