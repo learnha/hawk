@@ -23,6 +23,7 @@ module Api
 
     def root
       {
+        version: @cib.version,
         cluster: cluster,
         tasks: @tasks,
         nodes: nodes,

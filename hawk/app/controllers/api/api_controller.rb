@@ -1,6 +1,7 @@
 # Copyright (c) 2017 Kristoffer Gronlund <kgronlund@suse.com>
 # See COPYING for license.
 
+
 module Api
   class ApiController < ActionController::API
     HAWK_CHKPWD = "/usr/sbin/hawk_chkpwd"

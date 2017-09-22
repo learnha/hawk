@@ -1,6 +1,7 @@
 # Copyright (c) 2017 Kristoffer Gronlund <kgronlund@suse.com>
 # See COPYING for license.
 
+require 'cibtools'
 require 'rexml/document' unless defined? REXML::Document
 require 'rexml/xpath' unless defined? REXML::XPath
 
@@ -97,6 +98,14 @@ module Api
         return
       end
       @mode = :online
+    end
+
+    def version
+      if @mode == :online
+        CibTools.epoch_string @xml.root
+      else
+        "0:0:0"
+      end
     end
 
     def mode
