@@ -19,9 +19,10 @@ module Api
       @id
     end
 
-    # TODO
+    # TODO: check if fencing is enabled and call appropriate
+    # version
     def state
-      :online
+      CibTools.determine_online_status_fencing(@statenode)
     end
 
     def type
@@ -39,6 +40,14 @@ module Api
     def initialize(root, id)
       @id = id
       @config = REXML::XPath.first(root, "/cib/configuration//primitive[@id='#{id}']")
+      lrm_resources = REXML::XPath.match(root, "/cib/status/node_state/lrm/lrm_resources/lrm_resource[@id='#{id}']")
+      @instances = lrm_resources.map do |lrm_resource|
+        node_state = lrm_resource.parent.parent.parent
+        {
+          node: node_state.attributes["uname"] || node_state.attributes["id"],
+          state: CibTools.determine_resource_state(lrm_resource)
+        }
+      end
     end
 
     def id
@@ -46,23 +55,32 @@ module Api
     end
 
     def type
-      return :clone if primitive.parent.name == "clone"
-      return :multistate if primitive.parent.name == "master"
+      return :clone if @config.parent.name == "clone"
+      return :multistate if @config.parent.name == "master"
       :primitive
     end
 
     # TODO
     def state
-      :running
+      state = :stopped
+      @instances.each do |instance|
+        state = :running if state == :stopped && instance[:state] == :running
+        state = :failed if instance[:state] == :failed
+      end
+      state
     end
 
-    def group
-      return primitive.parent.attribute["id"] if primitive.parent.name == "group"
-      ""
+    # TODO
+    def maintenance
+      false
+    end
+
+    def location
+       @instances
     end
 
     def to_hash
-      { id: id, type: type, state: state, group: group }
+      { id: id, type: type, state: state, maintenance: maintenance, location: location }
     end
   end
 
@@ -79,7 +97,7 @@ module Api
         Rails.logger.error "Unable to execute #{cmd}"
         return
       end
-      out, err, status = Util.run_as(user, cmd, '-Ql')
+      out, err, status = Util.run_as(user, File.basename(cmd), '-Ql')
       case status.exitstatus
       when 0
         @xml = REXML::Document.new(out)

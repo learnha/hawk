@@ -65,7 +65,7 @@ module CibTools
     in_ccm      = get_xml_attr(ns, 'in_ccm')
     crm_state   = get_xml_attr(ns, 'crmd')
     join_state  = get_xml_attr(ns, 'join')
-    exp_state   = get_xml_attr(ns, 'expected')
+    #exp_state   = get_xml_attr(ns, 'expected')
 
     # expect it to be up (more or less) if 'shutdown' is '0' or unspecified
     expected_up = get_xml_attr(ns, 'shutdown', '0') == 0
@@ -126,4 +126,16 @@ module CibTools
     end
   end
   module_function :rc_desc
+
+  def determine_resource_state(lrmrsc)
+    rc = REXML::XPath.first(lrmrsc, "//lrm_rsc_op").attributes["rc-code"].to_i
+    if rc == 0 || rc == 8
+      :running
+    elsif rc == 7
+      :stopped
+    else
+      :failed
+    end
+  end
+  module_function :determine_resource_state
 end
